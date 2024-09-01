@@ -1,8 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SchoolAttendance_API;
+using SchoolAttendance_BusinessLayer.Abstract;
+using SchoolAttendance_BusinessLayer.Concrete;
+using SchoolAttendance_DataAccessLayer.Abstract;
 using SchoolAttendance_DataAccessLayer.Concrete;
+using SchoolAttendance_DataAccessLayer.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddApplicationServices();
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
