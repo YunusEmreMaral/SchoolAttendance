@@ -26,9 +26,4 @@
     <ProjectReference Include="..\SchoolAttendance_EntityLayer\SchoolAttendance_EntityLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstract\" />
-    <Folder Include="Concrete\" />
-  </ItemGroup>
-
 </Project>

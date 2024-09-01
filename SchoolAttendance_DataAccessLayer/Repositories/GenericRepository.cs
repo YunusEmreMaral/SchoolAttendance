@@ -40,7 +40,7 @@ namespace SchoolAttendance_DataAccessLayer.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetListAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
@@ -49,5 +49,7 @@ namespace SchoolAttendance_DataAccessLayer.Repositories
         {
             return await _context.Set<T>().Where(filter).ToListAsync();
         }
+
+       
     }
 }

@@ -11,7 +11,7 @@ namespace SchoolAttendance_DataAccessLayer.Abstract
         Task DeleteAsync(T entity);
         Task UpdateAsync(T entity);
         Task<T> GetByIDAsync(int id);
-        Task<List<T>> GetAllAsync();
+        Task<List<T>> GetListAsync();
         Task<List<T>> GetByFilterAsync(Expression<Func<T, bool>> filter);
     }
 }
