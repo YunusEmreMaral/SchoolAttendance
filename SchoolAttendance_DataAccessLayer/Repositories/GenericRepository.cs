@@ -1,10 +1,9 @@
-﻿using SchoolAttendance_DataAccessLayer.Abstract;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolAttendance_DataAccessLayer.Abstract;
 using SchoolAttendance_DataAccessLayer.Concrete;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SchoolAttendance_DataAccessLayer.Repositories
@@ -18,37 +17,37 @@ namespace SchoolAttendance_DataAccessLayer.Repositories
             _context = context;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _context.Add(entity);
-            _context.SaveChanges();
+            await _context.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _context.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public T GetByID(int id)
-        {
-            return _context.Set<T>().Find(id);
-        }
-
-        public List<T> GetListAll()
-        {
-            return _context.Set<T>().ToList();
-        }
-        public List<T> GetListByFilter(Expression<Func<T, bool>> filter) // buna bi bak tekrardan cok onemli metod 
-        {
-            
-            return _context.Set<T>().Where(filter).ToList();
-        }
-
-        public void Update(T entity)
+        public async Task UpdateAsync(T entity)
         {
             _context.Update(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<T> GetByIDAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<List<T>> GetByFilterAsync(Expression<Func<T, bool>> filter)
+        {
+            return await _context.Set<T>().Where(filter).ToListAsync();
         }
     }
 }
