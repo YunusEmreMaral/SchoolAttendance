@@ -3,7 +3,9 @@ using SchoolAttendance_BusinessLayer.Abstract;
 using SchoolAttendance_BusinessLayer.Concrete;
 using SchoolAttendance_BusinessLayer.Container;
 using SchoolAttendance_DataAccessLayer.Abstract;
+using SchoolAttendance_DataAccessLayer.Concrete;
 using SchoolAttendance_DataAccessLayer.EntityFramework;
+using SchoolAttendance_EntityLayer.Concrete;
 
 namespace SchoolAttendance_API
 {
@@ -15,10 +17,12 @@ namespace SchoolAttendance_API
             services.AddScoped<IAttendanceService, AttendanceManager>();
             services.AddScoped<ICourseService, CourseManager>();
             services.AddScoped<IQRCodeGeneratorService, QRCodeGeneratorService>();
+            services.AddScoped<IUserService, UserService>();
 
             // Registering Data Access Layer Services
             services.AddScoped<IAttendanceDal, EfAttendanceDal>();
             services.AddScoped<ICourseDal, EfCourseDal>();
+            services.AddScoped<IUserDal, EfUserDal>();
         }
     }
 }

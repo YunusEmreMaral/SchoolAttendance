@@ -1,2 +1,1 @@
-Identity kısmını dene ve ögrenci ogretmen girişleri ayarla 
-Courseun qr kodunu olusturmayı ayarla ve devamsızlık sistemine entegre et .
+role kısmını ayarla ve  admin teacher student kısmını oluştur şuanlık bunu yap ardından  user kısmınıda getirmek ekleme silme kısmını ayarla 
