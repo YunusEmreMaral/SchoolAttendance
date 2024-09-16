@@ -1,4 +1,5 @@
 ﻿using SchoolAttendance_BusinessLayer.Abstract;
+using SchoolAttendance_BusinessLayer.Container;
 using SchoolAttendance_DataAccessLayer.Abstract;
 using SchoolAttendance_EntityLayer.Concrete;
 using System;
@@ -11,19 +12,31 @@ namespace SchoolAttendance_BusinessLayer.Concrete
     public class CourseManager : ICourseService
     {
         private readonly ICourseDal _courseDal;
+        private readonly IQRCodeGeneratorService _qrCodeGeneratorService;
 
-        public CourseManager(ICourseDal courseDal)
+
+        public CourseManager(ICourseDal courseDal, IQRCodeGeneratorService qrCodeGeneratorService)
         {
             _courseDal = courseDal;
+            _qrCodeGeneratorService = qrCodeGeneratorService;
         }
+
 
         public async Task TAddAsync(Course t)
         {
             if (t == null)
                 throw new ArgumentNullException(nameof(t));
 
+            t.QRCode = await _qrCodeGeneratorService.GenerateQRCodeAsync(t.CourseName);
+
             await _courseDal.AddAsync(t);
         }
+
+        public async Task<string> GenerateQRCodeForCourseAsync(string courseName)
+        {
+            return await _qrCodeGeneratorService.GenerateQRCodeAsync(courseName);
+        }
+
 
         public async Task TDeleteAsync(Course t)
         {

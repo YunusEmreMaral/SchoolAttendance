@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SchoolAttendance_ApiLayer.Models;
 using SchoolAttendance_BusinessLayer.Abstract;
 using SchoolAttendance_EntityLayer.Concrete;
 using System.Collections.Generic;
@@ -36,15 +37,31 @@ namespace SchoolAttendance_API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] Course course)
+        public async Task<ActionResult<Course>> Create([FromBody] CreateCourseModel model)
         {
-            if (course == null)
+            if (model == null)
             {
-                return BadRequest();
+                return BadRequest("Course model cannot be null.");
             }
+
+            var course = new Course
+            {
+                CourseName = model.CourseName,
+                StartTime = model.StartTime,
+                EndTime = model.EndTime,
+                Date = model.Date,
+                TeacherId = model.TeacherId
+            };
+
+            // QR kodunu oluştur
+            course.QRCode = await _courseService.GenerateQRCodeForCourseAsync(course.CourseName);
+
+            // Kursu ekle
             await _courseService.TAddAsync(course);
+
             return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, [FromBody] Course course)
@@ -71,6 +88,19 @@ namespace SchoolAttendance_API.Controllers
             }
             await _courseService.TDeleteAsync(course);
             return NoContent();
+        }
+
+        [HttpGet("{id}/qrcode")]
+        public async Task<ActionResult<string>> GetQRCode(int id)
+        {
+            var course = await _courseService.TGetByIDAsync(id);
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // QR kodunu döndür
+            return Ok(course.QRCode);
         }
     }
 }
