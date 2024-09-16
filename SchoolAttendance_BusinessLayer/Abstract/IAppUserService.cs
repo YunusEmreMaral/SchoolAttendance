@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace SchoolAttendance_BusinessLayer.Abstract
 {
-    public interface ITeacherService:IGenericService<Teacher>
+    public interface IAppUserService
     {
+        Task CreateUserAsync(ApplicationUser user, string password);
+        Task AssignRoleAsync(ApplicationUser user, string role);
     }
 }

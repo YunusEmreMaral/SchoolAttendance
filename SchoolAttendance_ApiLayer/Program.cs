@@ -3,13 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using SchoolAttendance_API;
 using SchoolAttendance_BusinessLayer.Abstract;
 using SchoolAttendance_BusinessLayer.Concrete;
+using SchoolAttendance_BusinessLayer.Container;
 using SchoolAttendance_DataAccessLayer.Abstract;
 using SchoolAttendance_DataAccessLayer.Concrete;
 using SchoolAttendance_DataAccessLayer.EntityFramework;
+using SchoolAttendance_EntityLayer.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Service Registration (Senin static class'ýndan gelen metot)
 builder.Services.AddApplicationServices();
 
 // Add services to the container.
@@ -17,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure ASP.NET Core Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -35,6 +37,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await SeedData.SeedRoles(roleManager);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -50,8 +58,9 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthentication(); // Kullanýcý kimlik doðrulamasý
-app.UseAuthorization(); // Yetkilendirme
+
+app.UseAuthentication(); // Kimlik doðrulamasý ekleniyor
+app.UseAuthorization();   // Yetkilendirme ekleniyor
 
 app.MapControllers();
 

@@ -10,9 +10,11 @@ namespace SchoolAttendance_EntityLayer.Concrete
     {
         public int AttendanceId { get; set; } // PK
         public int CourseId { get; set; } // FK
-        public int StudentId { get; set; } // FK
+        public string StudentId { get; set; } // FK (IdentityUser'dan gelen)
         public DateTime Timestamp { get; set; } // Yoklamanın alındığı zaman
+
         public Course Course { get; set; } // İlişki
-        public Student Student { get; set; } // İlişki
+        public ApplicationUser Student { get; set; } // İlişki (ApplicationUser ile)
     }
+
 }

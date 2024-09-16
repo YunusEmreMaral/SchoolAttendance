@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SchoolAttendance_API", "SchoolAttendance_API", "{91A46FAA-E417-4A67-AD6C-CE238E251735}"
+	ProjectSection(SolutionItems) = preProject
+		TextFile1.txt = TextFile1.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAttendance_EntityLayer", "SchoolAttendance_EntityLayer\SchoolAttendance_EntityLayer.csproj", "{CA281423-F415-41F8-9F58-8FBD6BD8158C}"
 EndProject
