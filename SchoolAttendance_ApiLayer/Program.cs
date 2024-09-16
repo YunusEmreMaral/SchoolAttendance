@@ -11,7 +11,7 @@ using SchoolAttendance_EntityLayer.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Service Registration (Senin static class'ýndan gelen metot)
+// Service Registration (Business Layer ve Data Access Layer servisleri)
 builder.Services.AddApplicationServices();
 
 // Add services to the container.

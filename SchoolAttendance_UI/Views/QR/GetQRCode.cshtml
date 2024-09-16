@@ -1,0 +1,26 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetQRCode</title>
+
+    <h2>QR Kod</h2>
+
+    @if (ViewBag.QRCode != null)
+    {
+        <img src="@ViewBag.QRCode" alt="QR Code" />
+    }
+    else
+    {
+        <p>QR kodu bulunamadı.</p>
+    }
+</head>
+<body>
+</body>
+</html>

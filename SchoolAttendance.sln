@@ -8,13 +8,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SchoolAttendance_API", "Sch
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAttendance_EntityLayer", "SchoolAttendance_EntityLayer\SchoolAttendance_EntityLayer.csproj", "{CA281423-F415-41F8-9F58-8FBD6BD8158C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolAttendance_EntityLayer", "SchoolAttendance_EntityLayer\SchoolAttendance_EntityLayer.csproj", "{CA281423-F415-41F8-9F58-8FBD6BD8158C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAttendance_BusinessLayer", "SchoolAttendance_BusinessLayer\SchoolAttendance_BusinessLayer.csproj", "{AEB82B39-EF3B-438B-8D0A-7AB5BEE24E7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolAttendance_BusinessLayer", "SchoolAttendance_BusinessLayer\SchoolAttendance_BusinessLayer.csproj", "{AEB82B39-EF3B-438B-8D0A-7AB5BEE24E7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAttendance_DataAccessLayer", "SchoolAttendance_DataAccessLayer\SchoolAttendance_DataAccessLayer.csproj", "{F2DE3FA7-4B35-4C92-A06E-ECB45B26F827}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolAttendance_DataAccessLayer", "SchoolAttendance_DataAccessLayer\SchoolAttendance_DataAccessLayer.csproj", "{F2DE3FA7-4B35-4C92-A06E-ECB45B26F827}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAttendance_ApiLayer", "SchoolAttendance_ApiLayer\SchoolAttendance_ApiLayer.csproj", "{1739F4AB-56A2-4539-83B6-119C866BD178}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolAttendance_ApiLayer", "SchoolAttendance_ApiLayer\SchoolAttendance_ApiLayer.csproj", "{1739F4AB-56A2-4539-83B6-119C866BD178}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SchoolAttendance_UI", "SchoolAttendance_UI", "{0F60F9AA-EC05-4EE2-A5C8-8C826456A925}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAttendance_UI", "SchoolAttendance_UI\SchoolAttendance_UI.csproj", "{F0E77533-6448-456E-9ED9-429C61C22000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +42,10 @@ Global
 		{1739F4AB-56A2-4539-83B6-119C866BD178}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1739F4AB-56A2-4539-83B6-119C866BD178}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1739F4AB-56A2-4539-83B6-119C866BD178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0E77533-6448-456E-9ED9-429C61C22000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0E77533-6448-456E-9ED9-429C61C22000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0E77533-6448-456E-9ED9-429C61C22000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0E77533-6448-456E-9ED9-429C61C22000}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +55,7 @@ Global
 		{AEB82B39-EF3B-438B-8D0A-7AB5BEE24E7F} = {91A46FAA-E417-4A67-AD6C-CE238E251735}
 		{F2DE3FA7-4B35-4C92-A06E-ECB45B26F827} = {91A46FAA-E417-4A67-AD6C-CE238E251735}
 		{1739F4AB-56A2-4539-83B6-119C866BD178} = {91A46FAA-E417-4A67-AD6C-CE238E251735}
+		{F0E77533-6448-456E-9ED9-429C61C22000} = {0F60F9AA-EC05-4EE2-A5C8-8C826456A925}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4FF86A31-A792-41C9-8E8E-4A8C027DB309}
