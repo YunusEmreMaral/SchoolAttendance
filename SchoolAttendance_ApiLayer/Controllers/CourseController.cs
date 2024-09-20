@@ -50,14 +50,16 @@ namespace SchoolAttendance_API.Controllers
                 StartTime = model.StartTime,
                 EndTime = model.EndTime,
                 Date = model.Date,
-                TeacherId = model.TeacherId
+                TeacherId = model.TeacherId,
+                QRCode = null // QR kodu henüz oluşturulmadı
             };
 
-            // QR kodunu oluştur
-            course.QRCode = await _courseService.GenerateQRCodeForCourseAsync(course.CourseName);
-
-            // Kursu ekle
             await _courseService.TAddAsync(course);
+
+            var qrCode = await _courseService.GenerateQRCodeForCourseAsync(course.CourseId.ToString());
+
+            course.QRCode = qrCode;
+            await _courseService.TUpdateAsync(course);
 
             return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
         }
