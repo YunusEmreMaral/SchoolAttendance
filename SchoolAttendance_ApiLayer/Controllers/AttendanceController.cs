@@ -15,6 +15,7 @@ namespace SchoolAttendance_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize] // Kimlik doğrulaması gerektir
+
     public class AttendanceController : ControllerBase
     {
         private readonly IAttendanceService _attendanceService;

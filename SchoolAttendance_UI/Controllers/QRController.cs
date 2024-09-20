@@ -20,7 +20,7 @@ namespace SchoolAttendance_UI.Controllers
             // API'deki QR kodu getiren endpoint
             var apiUrl = $"https://localhost:7040/api/course/{id}/qrcode";
 
-            // API'den QR kodunu çek
+            // API'den QR kodunu çek    
             var response = await _httpClient.GetAsync(apiUrl);
 
             if (!response.IsSuccessStatusCode)

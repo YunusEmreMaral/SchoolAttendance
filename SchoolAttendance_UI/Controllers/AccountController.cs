@@ -25,7 +25,7 @@ namespace SchoolAttendance_UI.Controllers
             return View();
         }
 
-        [HttpPost]
+        
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {

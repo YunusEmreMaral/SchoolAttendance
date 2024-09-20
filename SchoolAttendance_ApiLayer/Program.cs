@@ -12,14 +12,25 @@ using SchoolAttendance_EntityLayer.Concrete;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS yapýlandýrmasý
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Service Registration (Business Layer ve Data Access Layer servisleri)
 builder.Services.AddApplicationServices();
 
-// Add services to the container.
+// DbContext ve baðlantý ayarlarý
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configure ASP.NET Core Identity
+// ASP.NET Core Identity yapýlandýrmasý
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -32,27 +43,30 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Add authentication
+// Authentication ayarlarý
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login"; // Giriþ yolu
     });
 
-builder.Services.AddControllersWithViews();
+// Swagger yapýlandýrmasý
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Controller ve MVC ayarlarý
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
-// Role seeding
+// Role ve kullanýcý seeding iþlemi (rol ve kullanýcýlarýn otomatik eklenmesi)
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     await SeedData.SeedRoles(roleManager);
 }
 
-// Configure the HTTP request pipeline.
+// HTTP request pipeline yapýlandýrmasý
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -64,14 +78,21 @@ else
     app.UseHsts();
 }
 
+// HTTPS yönlendirme ve statik dosya kullanýmýný etkinleþtirme
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// CORS middleware'i ekleniyor
+app.UseCors("AllowAllOrigins");
+
+// Routing ayarlarý
 app.UseRouting();
 
-app.UseAuthentication(); // Kimlik doðrulamasý burada
-app.UseAuthorization();  // Yetkilendirme burada
+// Kimlik doðrulama ve yetkilendirme
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapControllers();    // Controller route'larýný en son ayarlayýn
+// API controller route'larý
+app.MapControllers();
 
 app.Run();

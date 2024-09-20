@@ -7,6 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// CORS yapýlandýrmasý
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 // Authentication configuration
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -16,8 +25,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Cookie'nin süresi
         options.SlidingExpiration = true; // Süre dolduðunda yeniden süre uzatma
     });
-
-
 
 builder.Services.AddHttpClient<QRController>();
 builder.Services.AddHttpClient<AccountController>();
@@ -36,6 +43,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseCors("AllowAllOrigins"); // CORS kullanýmýný ekleyin
 app.UseAuthentication(); // Kimlik doðrulamasý ekleniyor
 app.UseAuthorization();  // Yetkilendirme ekleniyor
 

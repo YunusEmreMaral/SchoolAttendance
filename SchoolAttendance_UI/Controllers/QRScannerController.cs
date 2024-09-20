@@ -9,72 +9,63 @@ using System.Threading.Tasks;
 namespace SchoolAttendance_UI.Controllers
 {
     [Authorize]
-
     public class QRScannerController : Controller
     {
-        private readonly HttpClient _httpClient; // API istekleri için HttpClient
+        private readonly HttpClient _httpClient;
 
         public QRScannerController(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
+        // GET Metodu
+        public IActionResult RecordAttendance()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("Kullanıcı oturum açmadı.");
+            }
 
+            // Gerekli verileri ViewBag ile taşıyın
+            ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View();
+        }
 
-       
-
-
-
-        // Attendance kaydını yapmak için API'ye istek gönderir
-        [HttpPost("record")]
-        public async Task<IActionResult> RecordAttendance([FromBody] AttendanceDto attendanceDto)
+        [HttpPost]
+        public async Task<IActionResult> RecordAttendance(AttendanceDto attendanceDto)
         {
             if (attendanceDto == null)
             {
                 return BadRequest("Attendance data cannot be null.");
             }
 
-            // Debug için log ekleyebilirsiniz
-            Console.WriteLine($"Received CourseId: {attendanceDto.CourseId}, UserId: {attendanceDto.UserId} , timestam {attendanceDto.Timestamp}");
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
                 return BadRequest("User ID not found.");
             }
-           
+
             attendanceDto.UserId = userId;
             attendanceDto.Timestamp = DateTime.Now;
 
-            var jsonContent = new StringContent(JsonSerializer.Serialize(attendanceDto), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://localhost:7040/api/attendance/record", jsonContent);
+            var jsonContent = JsonSerializer.Serialize(attendanceDto);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://localhost:7040/api/Attendance/record", content);
 
             if (response.IsSuccessStatusCode)
             {
                 return Ok(new { Message = "Attendance recorded successfully." });
             }
 
-            return BadRequest(new { Message = "Failed to record attendance." });
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            return BadRequest(new { Message = "Failed to record attendance.", Details = errorMessage });
         }
 
-        // DTO sınıfına UserId ekleyin
         public class AttendanceDto
         {
-            public int CourseId { get; set; } // QR kodundan alınacak ders ID'si
-            public string UserId { get; set; } // Kullanıcı ID'si
-            public DateTime Timestamp { get; set; } // Yoklamanın alındığı zaman
+            public int CourseId { get; set; }
+            public string UserId { get; set; }
+            public DateTime Timestamp { get; set; }
         }
-
-
-        // QR kodundan ders ID'sini çıkarma metodu (örnek)
-        private int ExtractCourseIdFromQRCode(string qrCode)
-        {
-            // QR kodu analiz edilerek ders ID'si çıkar
-            // Burada uygun işleme göre düzenleyebilirsiniz
-            return int.Parse(qrCode); // Örnek olarak doğrudan parse ediyoruz
-        }
-        
-
-
     }
 }
