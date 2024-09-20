@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SchoolAttendance_API;
@@ -28,8 +29,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 6;
     options.Password.RequiredUniqueChars = 1;
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// Add authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // Giriþ yolu
+    });
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
@@ -37,6 +45,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Role seeding
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -57,11 +66,12 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-app.UseAuthentication(); // Kimlik doðrulamasý ekleniyor
-app.UseAuthorization();   // Yetkilendirme ekleniyor
+app.UseAuthentication(); // Kimlik doðrulamasý burada
+app.UseAuthorization();  // Yetkilendirme burada
 
-app.MapControllers();
+app.MapControllers();    // Controller route'larýný en son ayarlayýn
 
 app.Run();

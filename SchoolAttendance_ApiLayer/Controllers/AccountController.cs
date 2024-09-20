@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolAttendance_ApiLayer.Models;
 using SchoolAttendance_EntityLayer.Concrete;
 
@@ -27,7 +30,7 @@ namespace SchoolAttendance_ApiLayer.Controllers
 
             var user = new ApplicationUser
             {
-                UserName = model.UserName,
+                UserName = model.SchoolNumber, // Burada SchoolNumber'ı UserName olarak kullanıyoruz
                 Email = model.Email,
                 Name = model.Name,
                 SchoolNumber = model.SchoolNumber
@@ -41,21 +44,39 @@ namespace SchoolAttendance_ApiLayer.Controllers
 
             return BadRequest(result.Errors);
         }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
+            // SchoolNumber'a göre kullanıcıyı buluyoruz
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.SchoolNumber == model.SchoolNumber);
+
+            if (user == null)
+            {
+                return Unauthorized(new { Message = "Invalid login attempt." });
+            }
+
+            // Kullanıcı bulundu, şimdi UserName ile giriş yapalım
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
+
             if (result.Succeeded)
             {
-                return Ok(new { Message = "Login successful." });
+                return Ok(new
+                {
+                    Message = "Login successful.",
+                    UserId = user.Id // Kullanıcı ID'sini burada döndürüyoruz
+                });
             }
 
             return Unauthorized(new { Message = "Invalid login attempt." });
         }
+
+
+
+
+
 
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
@@ -75,5 +96,18 @@ namespace SchoolAttendance_ApiLayer.Controllers
 
             return BadRequest(result.Errors);
         }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            // ASP.NET Core Identity oturumu sonlandırma
+            await _signInManager.SignOutAsync();
+
+            // Kullanıcıya ait olan cookie oturumunu sonlandırma
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return Ok(new { Message = "Logout successful." });
+        }
+
+
     }
 }

@@ -9,5 +9,6 @@ namespace SchoolAttendance_BusinessLayer.Abstract
 {
     public interface IAttendanceService:IGenericService<Attendance>
     {
+
     }
 }

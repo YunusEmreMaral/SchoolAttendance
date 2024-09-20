@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+
+@model SchoolAttendance_UI.Models.LoginViewModel
+
+<h2>Login</h2>
+<form asp-action="Login" method="post">
+    <div>
+        <label for="SchoolNumber">School Number</label>
+        <input type="text" id="SchoolNumber" name="SchoolNumber" asp-for="SchoolNumber" />
+        <span asp-validation-for="SchoolNumber"></span>
+    </div>
+    <div>
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label for="RememberMe">Remember Me</label>
+        <input type="checkbox" id="RememberMe" name="RememberMe" asp-for="RememberMe" />
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+

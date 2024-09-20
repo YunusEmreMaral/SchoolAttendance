@@ -15,8 +15,19 @@ namespace SchoolAttendance_UI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // Kullanıcının kimliğini kontrol et
+            if (User.Identity.IsAuthenticated)
+            {
+                // Kullanıcı giriş yapmış
+                return View();
+            }
+            else
+            {
+                // Kullanıcı giriş yapmamış
+                return RedirectToAction("Login", "Account");
+            }
         }
+
 
         public IActionResult Privacy()
         {

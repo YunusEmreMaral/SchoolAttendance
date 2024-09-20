@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Kod Tarayıcı</title>
+</head>
+<body>
+    <h1>QR Kodunu Tarat</h1>
+    <button id="startButton">Kamerayı Aç</button>
+    <video id="video" width="300" height="200" style="display:none;" autoplay></video>
+    <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
+    <p id="result"></p>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const resultDisplay = document.getElementById('result');
+
+        // Kullanıcı ID'sini dinamik olarak almak için meta tag kullanıyoruz
+        function getUserId() {
+            return document.querySelector('meta[name="user-id"]').getAttribute('content'); // Kullanıcı ID'sini al
+        }
+
+        document.getElementById('startButton').addEventListener('click', function () {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                    video.play();
+                    scanQRCode();
+                })
+                .catch(function (err) {
+                    console.error("Kamera açma hatası:", err);
+                });
+        });
+
+        function scanQRCode() {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+            if (code) {
+                resultDisplay.innerText = `QR Kod: ${code.data}`;
+                const courseId = ExtractCourseIdFromQRCode(code.data);
+                const userId = getUserId(); // Kullanıcı ID'sini al
+                const timestamp = new Date().toISOString(); // O anki zaman
+
+                // Yoklamayı kaydet
+                RecordAttendance(courseId, userId, timestamp);
+            } else {
+                requestAnimationFrame(scanQRCode);
+            }
+        }
+
+        function RecordAttendance(courseId, userId, timestamp) {
+            fetch('https://localhost:7040/api/attendance/record', { // API URL'sini burada güncelleyin
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ CourseId: courseId, UserId: userId, Timestamp: timestamp }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.Message);
+                })
+                .catch(error => {
+                    console.error("Hata:", error);
+                    alert("Yoklama kaydedilirken hata oluştu.");
+                });
+        }
+
+        function ExtractCourseIdFromQRCode(qrCode) {
+            return parseInt(qrCode); // QR kodundan ders ID'sini çıkar
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+    <meta name="user-id" content="123"> <!-- Kullanıcı ID'sini dinamik olarak ayarlayın -->
+
+</body>
+</html>
