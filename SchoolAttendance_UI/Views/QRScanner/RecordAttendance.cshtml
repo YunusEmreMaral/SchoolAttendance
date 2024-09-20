@@ -15,15 +15,13 @@
 
     <form id="attendanceForm" action="/QRScanner/RecordAttendance" method="post">
         <input type="hidden" name="UserId" value="@userId" />
-        <label for="courseId">Ders ID:</label>
-        <input type="number" id="courseId" name="CourseId" required />
-        <button type="submit">Yoklamayı Kaydet</button>
+        <input type="hidden" id="courseId" name="CourseId" required />
     </form>
 
     <script>
         function onScanSuccess(qrCodeMessage) {
+            // Okunan QR kodunu form alanına yaz
             document.getElementById('courseId').value = qrCodeMessage;
-            alert(`Ders ID'si okundu: ${qrCodeMessage}`);
 
             // Formu otomatik olarak gönder
             document.getElementById('attendanceForm').submit();
