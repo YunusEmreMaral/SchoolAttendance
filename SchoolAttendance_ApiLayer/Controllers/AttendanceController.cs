@@ -51,7 +51,6 @@ namespace SchoolAttendance_API.Controllers
             return Ok(new { Message = "Attendance recorded successfully." });
         }
 
-
         // DTO (Data Transfer Object) sınıfı
         public class AttendanceDto
         {
