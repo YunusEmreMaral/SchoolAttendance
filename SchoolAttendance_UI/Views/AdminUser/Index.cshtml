@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Kullanıcı Listesi";
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+
+@model List<UserViewModel>
+
+<div class="container mt-5">
+    <h2 class="text-center">Kullanıcı Listesi</h2>
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">Kullanıcı listesi boş.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Okul Numarası</th>
+                    <th>Email</th>
+                    <th>Sil</th>
+                    <th>Rol Ata</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.SchoolNumber</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <form asp-action="DeleteUser" method="post">
+                                <input type="hidden" name="id" value="@user.id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                            </td>
+                            <td>
+                            <a href="@Url.Action("AssignRole", new { userId = user.id })" class="btn btn-primary btn-sm">Rol Ata</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -1,0 +1,22 @@
+﻿@model UserRoleAssignmentViewModel
+
+@{
+    ViewData["Title"] = "Assign Role";
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Assign Role for @Model.UserName</h2>
+    <form asp-action="AssignRole" method="post">
+        <input type="hidden" name="UserId" value="@Model.UserId" />
+        <div class="form-group">
+            <label for="RoleToAssign">Select Role</label>
+            <select class="form-control" id="RoleToAssign" name="RoleToAssign">
+                <option value="Admin">Admin</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Assign Role</button>
+    </form>
+</div>

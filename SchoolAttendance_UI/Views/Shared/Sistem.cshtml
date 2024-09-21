@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Uygulama</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Create", "Lesson")">Ders Oluştur</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("List", "Lesson")">Dersler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("ShowQr", "Lesson")">QR Göster</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Attendance", "Lesson")">Yoklamalar</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false) <!-- Scripts section is now rendered here -->
+</body>
+</html>

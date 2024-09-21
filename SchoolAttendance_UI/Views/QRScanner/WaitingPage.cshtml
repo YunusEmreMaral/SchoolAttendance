@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Bekleme Sayfası";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bekleme Sayfası</title>
+</head>
+<body>
+    <h1>Yoklama Kaydedildi!</h1>
+    <p>Yoklama başarıyla kaydedildi. Lütfen QR kodunu taratmak için aşağıdaki butona tıklayın.</p>
+
+    <form action="/QRScanner/RecordAttendance" method="get">
+        <button type="submit">QR Tarat</button>
+    </form>
+</body>
+</html>

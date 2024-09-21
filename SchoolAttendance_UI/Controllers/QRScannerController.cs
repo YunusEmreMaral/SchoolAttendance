@@ -54,13 +54,18 @@ namespace SchoolAttendance_UI.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return Ok(new { Message = "Attendance recorded successfully." });
+                return RedirectToAction("WaitingPage"); // Bekleme sayfasına yönlendir
             }
+            
+
 
             var errorMessage = await response.Content.ReadAsStringAsync();
             return BadRequest(new { Message = "Failed to record attendance.", Details = errorMessage });
         }
-
+        public IActionResult WaitingPage()
+        {
+            return View();
+        }
         public class AttendanceDto
         {
             public int CourseId { get; set; }

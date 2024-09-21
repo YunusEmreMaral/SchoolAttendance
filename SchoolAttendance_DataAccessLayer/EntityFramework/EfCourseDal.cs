@@ -10,5 +10,11 @@ namespace SchoolAttendance_DataAccessLayer.EntityFramework
         public EfCourseDal(ApplicationDbContext context) : base(context)
         {
         }
+
+        public async Task<List<Course>> GetByTeacherIdAsync(string teacherId)
+        {
+            return await GetByFilterAsync(c => c.TeacherId == teacherId);
+        }
+
     }
 }

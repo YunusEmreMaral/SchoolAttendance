@@ -16,11 +16,16 @@
     <form id="attendanceForm" action="/QRScanner/RecordAttendance" method="post">
         <input type="hidden" name="UserId" value="@userId" />
         <input type="hidden" id="courseId" name="CourseId" required />
+        <button type="submit" style="display: none;">Submit</button> <!-- Gizli buton -->
     </form>
 
     <script>
+        let isSubmitting = false; // Gönderim durumu kontrolü
+
         function onScanSuccess(qrCodeMessage) {
-            // Okunan QR kodunu form alanına yaz
+            if (isSubmitting) return; // Eğer zaten gönderim yapılıyorsa, çık
+
+            isSubmitting = true; // Gönderim başlatıldı
             document.getElementById('courseId').value = qrCodeMessage;
 
             // Formu otomatik olarak gönder

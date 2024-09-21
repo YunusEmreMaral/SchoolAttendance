@@ -1,0 +1,37 @@
+﻿@model List<AttendanceViewModel2>
+@{
+    ViewData["Title"] = "Attendance";
+    Layout = "~/Views/Shared/Sistem.cshtml";
+}
+
+<h2>Attendance for Course</h2>
+
+@if (!Model.Any())
+{
+    <p>No attendances found for this course.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>CourseName</th>
+
+                <th>SchoolNumber</th>
+
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var attendance in Model)
+            {
+                <tr>
+                    <td>@attendance.CourseName</td>
+
+                    <td>@attendance.SchoolNumber</td>
+                    <td>@attendance.Timestamp.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

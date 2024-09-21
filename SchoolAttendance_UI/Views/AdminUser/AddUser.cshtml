@@ -1,0 +1,31 @@
+﻿@model UserViewModel
+
+@{
+    ViewData["Title"] = "Add User";
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Add New User</h2>
+    <form asp-action="AddUser" method="post">
+        <div class="form-group">
+            <label for="SchoolNumber">School Number</label>
+            <input type="text" class="form-control" id="SchoolNumber" name="SchoolNumber" required />
+        </div>
+        <div class="form-group" style="display: none;">
+            <label for="UserName">Username</label>
+            <input type="text" class="form-control" id="UserName" name="UserName" required readonly />
+        </div>
+        <div class="form-group">
+            <label for="Password">Password</label>
+            <input type="password" class="form-control" id="Password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('SchoolNumber').addEventListener('input', function () {
+        document.getElementById('UserName').value = this.value;
+    });
+</script>

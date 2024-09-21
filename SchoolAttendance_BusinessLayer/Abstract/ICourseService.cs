@@ -10,6 +10,7 @@ namespace SchoolAttendance_BusinessLayer.Abstract
     public interface ICourseService:IGenericService<Course>
     {
         Task<string> GenerateQRCodeForCourseAsync(string courseName);
+        Task<List<Course>> GetCoursesByTeacherIdAsync(string teacherId);
 
     }
 }

@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using SchoolAttendance_BusinessLayer.Abstract;
-using SchoolAttendance_EntityLayer.Concrete;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
+using SchoolAttendance_EntityLayer.Concrete;
 
-// çalışmıyor buraya bakılacak 
 namespace SchoolAttendance_WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -15,15 +13,14 @@ namespace SchoolAttendance_WebAPI.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IAppUserService _appUserService;
 
-        public UserRoleController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IAppUserService appUserService)
+        public UserRoleController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _appUserService = appUserService;
         }
 
+        // Get roles for a specific user
         [HttpGet("get-user-roles/{userId}")]
         public async Task<IActionResult> GetUserRoles(string userId)
         {
@@ -34,16 +31,10 @@ namespace SchoolAttendance_WebAPI.Controllers
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            var roleNames = roles.ToList();
-
-            return Ok(new
-            {
-                UserId = userId,
-                UserName = user.UserName,
-                Roles = roleNames
-            });
+            return Ok(new { user.UserName, Roles = roles });
         }
 
+        // Assign role to user
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole([FromBody] UserRoleModel model)
         {
@@ -53,16 +44,16 @@ namespace SchoolAttendance_WebAPI.Controllers
                 return NotFound("User not found.");
             }
 
-            var roleExist = await _roleManager.RoleExistsAsync(model.RoleName);
-            if (!roleExist)
+            if (!await _roleManager.RoleExistsAsync(model.RoleName))
             {
                 return BadRequest("Role does not exist.");
             }
 
-            await _appUserService.AssignRoleAsync(user, model.RoleName);
+            await _userManager.AddToRoleAsync(user, model.RoleName);
             return Ok($"Role '{model.RoleName}' assigned to user '{user.UserName}'.");
         }
 
+        // Remove role from user
         [HttpPost("remove-role")]
         public async Task<IActionResult> RemoveRole([FromBody] UserRoleModel model)
         {
@@ -72,15 +63,9 @@ namespace SchoolAttendance_WebAPI.Controllers
                 return NotFound("User not found.");
             }
 
-            var roleExist = await _roleManager.RoleExistsAsync(model.RoleName);
-            if (!roleExist)
-            {
-                return BadRequest("Role does not exist.");
-            }
-
             if (!await _userManager.IsInRoleAsync(user, model.RoleName))
             {
-                return BadRequest("User is not in this role.");
+                return BadRequest("User does not have this role.");
             }
 
             await _userManager.RemoveFromRoleAsync(user, model.RoleName);

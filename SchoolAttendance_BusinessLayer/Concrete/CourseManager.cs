@@ -21,6 +21,13 @@ namespace SchoolAttendance_BusinessLayer.Concrete
             _qrCodeGeneratorService = qrCodeGeneratorService;
         }
 
+        public async Task<List<Course>> GetCoursesByTeacherIdAsync(string teacherId)
+        {
+            if (string.IsNullOrEmpty(teacherId))
+                throw new ArgumentNullException(nameof(teacherId));
+
+            return await _courseDal.GetByFilterAsync(c => c.TeacherId == teacherId);
+        }
 
         public async Task TAddAsync(Course t)
         {

@@ -16,6 +16,10 @@ namespace SchoolAttendance_BusinessLayer.Concrete
         {
             _attendanceDal = attendanceDal;
         }
+        public async Task<List<Attendance>> GetAttendancesByCourseIdAsync(int courseId)
+        {
+            return await _attendanceDal.GetAttendancesByCourseIdAsync(courseId);
+        }
 
         public async Task TAddAsync(Attendance t)
         {

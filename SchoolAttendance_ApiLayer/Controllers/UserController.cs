@@ -10,97 +10,72 @@ namespace SchoolAttendance_WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAppUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IAppUserService userService)
         {
             _userService = userService;
         }
 
-        // GET: api/User/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(string id)
-        {
-            try
-            {
-                var user = await _userService.GetUserByIdAsync(id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                return Ok(user);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-        }
-
-        // GET: api/User
+        // Get all users
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.TGetListAsync();
             return Ok(users);
         }
 
-        // POST: api/User
+        // Get user by ID
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id) // ID'yi int olarak değiştirin
+        {
+            var user = await _userService.TGetByIDAsync(id); // ID'yi int olarak gönderin
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            return Ok(user);
+        }
+
+        // Create a new user
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] ApplicationUser user, [FromQuery] string password)
         {
             if (user == null || string.IsNullOrEmpty(password))
             {
-                return BadRequest("User and password must be provided.");
+                return BadRequest("Invalid data.");
             }
 
-            try
-            {
-                await _userService.CreateUserAsync(user, password);
-                return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"User creation failed: {ex.Message}");
-            }
+            await _userService.CreateUserAsync(user, password);
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
-        // PUT: api/User/{id}
+        // Update user
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] ApplicationUser user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] ApplicationUser user)
         {
-            if (user == null || id != user.Id)
+            // Eğer user.Id bir string ise, bunu int'e dönüştürmeye çalışın
+            if (id != int.Parse(user.Id))
             {
                 return BadRequest("User ID mismatch.");
             }
 
-            try
-            {
-                await _userService.UpdateUserAsync(user);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"User update failed: {ex.Message}");
-            }
+            await _userService.TUpdateAsync(user);
+            return NoContent();
         }
 
-        // DELETE: api/User/{id}
+        // Delete user
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(string id) // ID'yi int olarak değiştirin
         {
-            try
+            var user = await _userService.TGetByIDAsyncString(id); // ID'yi int olarak gönderin
+            if (user == null)
             {
-                await _userService.DeleteUserAsync(id);
-                return NoContent();
+                return NotFound("User not found.");
             }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"User deletion failed: {ex.Message}");
-            }
+
+            await _userService.TDeleteAsync(user);
+            return NoContent();
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using SchoolAttendance_BusinessLayer.Abstract;
-using SchoolAttendance_EntityLayer.Concrete;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,27 +16,33 @@ namespace SchoolAttendance_WebAPI.Controllers
             _roleManager = roleManager;
         }
 
+        // Get all roles
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
-            var roles = _roleManager.Roles;
-            return Ok(await roles.ToListAsync());
+            var roles = await _roleManager.Roles.ToListAsync();
+            return Ok(roles);
         }
 
+        // Create a new role
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] string roleName)
         {
-            var roleExist = await _roleManager.RoleExistsAsync(roleName);
-            if (roleExist)
+            if (await _roleManager.RoleExistsAsync(roleName))
             {
                 return BadRequest("Role already exists.");
             }
 
-            var role = new IdentityRole(roleName);
-            await _roleManager.CreateAsync(role);
-            return Ok(role);
+            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            if (result.Succeeded)
+            {
+                return Ok(new { RoleName = roleName });
+            }
+
+            return BadRequest("Failed to create role.");
         }
 
+        // Update role
         [HttpPut("{roleName}")]
         public async Task<IActionResult> UpdateRole(string roleName, [FromBody] string newRoleName)
         {
@@ -53,6 +57,7 @@ namespace SchoolAttendance_WebAPI.Controllers
             return Ok(role);
         }
 
+        // Delete role
         [HttpDelete("{roleName}")]
         public async Task<IActionResult> DeleteRole(string roleName)
         {

@@ -25,7 +25,7 @@ namespace SchoolAttendance_UI.Controllers
             return View();
         }
 
-        
+        // POST: Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -47,10 +47,10 @@ namespace SchoolAttendance_UI.Controllers
 
                 // Kullanıcı ID'sini loginResponse üzerinden alarak Claim'leri oluşturun
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, loginResponse.UserId), // Kullanıcı ID'si
-            new Claim(ClaimTypes.Name, model.SchoolNumber) // Kullanıcı adı (SchoolNumber)
-        };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, loginResponse.UserId), // Kullanıcı ID'si
+                    new Claim(ClaimTypes.Name, model.SchoolNumber) // Kullanıcı adı (SchoolNumber)
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

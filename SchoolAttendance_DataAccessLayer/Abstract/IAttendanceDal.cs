@@ -9,5 +9,7 @@ namespace SchoolAttendance_DataAccessLayer.Abstract
 {
     public interface IAttendanceDal : IGenericDal<Attendance>
     {
+        Task<List<Attendance>> GetAttendancesByCourseIdAsync(int courseId);
+
     }
 }

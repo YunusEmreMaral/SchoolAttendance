@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace SchoolAttendance_BusinessLayer.Abstract
 {
-    public interface IAppUserService
+    public interface IAppUserService : IGenericService<ApplicationUser>
     {
         Task CreateUserAsync(ApplicationUser user, string password);
         Task AssignRoleAsync(ApplicationUser user, string role);
+        Task<ApplicationUser> TGetByIDAsyncString(string id); // Yeni metot
+
     }
 }

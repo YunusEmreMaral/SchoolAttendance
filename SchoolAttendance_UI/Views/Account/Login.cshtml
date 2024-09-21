@@ -8,21 +8,22 @@
 
 <h2>Login</h2>
 <form asp-action="Login" method="post">
-    <div>
+    <div class="form-group">
         <label for="SchoolNumber">School Number</label>
-        <input type="text" id="SchoolNumber" name="SchoolNumber" asp-for="SchoolNumber" />
-        <span asp-validation-for="SchoolNumber"></span>
+        <input type="text" class="form-control" id="SchoolNumber" name="SchoolNumber" asp-for="SchoolNumber" />
+        <span asp-validation-for="SchoolNumber" class="text-danger"></span>
     </div>
-    <div>
+    <div class="form-group">
         <label for="Password">Password</label>
-        <input type="password" id="Password" name="Password" asp-for="Password" />
-        <span asp-validation-for="Password"></span>
+        <input type="password" class="form-control" id="Password" name="Password" asp-for="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-    <div>
-        <label for="RememberMe">Remember Me</label>
-        <input type="checkbox" id="RememberMe" name="RememberMe" asp-for="RememberMe" />
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="RememberMe" name="RememberMe" asp-for="RememberMe" />
+        <label class="form-check-label" for="RememberMe">Remember Me</label>
     </div>
-    <button type="submit">Login</button>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
 </form>
+
 
 

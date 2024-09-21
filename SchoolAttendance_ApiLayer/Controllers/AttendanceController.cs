@@ -103,6 +103,48 @@ namespace SchoolAttendance_API.Controllers
             await _attendanceService.TUpdateAsync(attendance);
             return NoContent();
         }
+        public class AttendanceDto2
+        {
+            public int AttendanceId { get; set; }
+            public DateTime Timestamp { get; set; }
+            public string StudentId { get; set; }
+            public string CourseName { get; set; }
+            public string SchoolNumber { get; set; } // SchoolNumber'ı ekledik
+        }
+
+        // API metodunuzda dönüş tipi olarak DTO kullanabilirsiniz
+        [HttpGet("{id}/attendances")]
+        public async Task<ActionResult<List<AttendanceDto2>>> GetAttendancesByCourse(int id)
+        {
+            try
+            {
+                var attendances = await _attendanceService.GetAttendancesByCourseIdAsync(id);
+                if (attendances == null || !attendances.Any())
+                {
+                    return NotFound("No attendances found for this course.");
+                }
+
+                // DTO'ya dönüştürme
+                var attendanceDtos = attendances.Select(a => new AttendanceDto2
+                {
+                    AttendanceId = a.AttendanceId,
+                    Timestamp = a.Timestamp,
+                    StudentId = a.StudentId,
+                    CourseName = a.Course?.CourseName, // Güvenli erişim
+                    SchoolNumber = a.Student?.SchoolNumber // Güvenli erişim
+                }).ToList();
+
+                return Ok(attendanceDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+
+
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)

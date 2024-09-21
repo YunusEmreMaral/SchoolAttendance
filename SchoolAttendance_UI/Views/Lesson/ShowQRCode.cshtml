@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "QR Code";
+    Layout = "~/Views/Shared/Sistem.cshtml";
+}
+
+<h2>QR Code for the Course</h2>
+
+<div class="text-center">
+    @if (ViewBag.QRCode != null)
+    {
+        <img src="@ViewBag.QRCode" alt="QR Code" style="max-width: 400px; height: auto;" />
+    }
+    else
+    {
+        <p>QR Code could not be retrieved.</p>
+    }
+</div>

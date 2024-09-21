@@ -9,6 +9,7 @@ namespace SchoolAttendance_BusinessLayer.Abstract
 {
     public interface IAttendanceService:IGenericService<Attendance>
     {
+        Task<List<Attendance>> GetAttendancesByCourseIdAsync(int courseId);
 
     }
 }

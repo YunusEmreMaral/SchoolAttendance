@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SchoolAttendance_ApiLayer.Models;
 using SchoolAttendance_BusinessLayer.Abstract;
 using SchoolAttendance_EntityLayer.Concrete;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SchoolAttendance_API.Controllers
@@ -104,5 +106,25 @@ namespace SchoolAttendance_API.Controllers
             // QR kodunu döndür
             return Ok(course.QRCode);
         }
+        [HttpGet("teacher-courses")]
+        public async Task<ActionResult<List<Course>>> GetCoursesByTeacher()
+        {
+            var teacherId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Kullanıcı ID'sini al
+
+            if (string.IsNullOrEmpty(teacherId))
+            {
+                return Unauthorized();
+            }
+
+            var courses = await _courseService.GetCoursesByTeacherIdAsync(teacherId);
+
+            if (courses == null || !courses.Any())
+            {
+                return NotFound("No courses found for this teacher.");
+            }
+
+            return Ok(courses);
+        }
+
     }
 }
