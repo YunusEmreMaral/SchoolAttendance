@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 using SchoolAttendance_EntityLayer.Concrete;
 
 namespace SchoolAttendance_WebAPI.Controllers
@@ -34,7 +32,6 @@ namespace SchoolAttendance_WebAPI.Controllers
             return Ok(new { user.UserName, Roles = roles });
         }
 
-        // Assign role to user
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole([FromBody] UserRoleModel model)
         {
@@ -49,9 +46,15 @@ namespace SchoolAttendance_WebAPI.Controllers
                 return BadRequest("Role does not exist.");
             }
 
-            await _userManager.AddToRoleAsync(user, model.RoleName);
+            var result = await _userManager.AddToRoleAsync(user, model.RoleName);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
             return Ok($"Role '{model.RoleName}' assigned to user '{user.UserName}'.");
         }
+
 
         // Remove role from user
         [HttpPost("remove-role")]
@@ -63,19 +66,20 @@ namespace SchoolAttendance_WebAPI.Controllers
                 return NotFound("User not found.");
             }
 
-            if (!await _userManager.IsInRoleAsync(user, model.RoleName))
+            var result = await _userManager.RemoveFromRoleAsync(user, model.RoleName);
+            if (!result.Succeeded)
             {
-                return BadRequest("User does not have this role.");
+                return BadRequest(result.Errors);
             }
 
-            await _userManager.RemoveFromRoleAsync(user, model.RoleName);
             return Ok($"Role '{model.RoleName}' removed from user '{user.UserName}'.");
         }
-
-        public class UserRoleModel
-        {
-            public string UserId { get; set; }
-            public string RoleName { get; set; }
-        }
     }
+
+    public class UserRoleModel
+    {
+        public string UserId { get; set; }
+        public string RoleName { get; set; }
+    }
+
 }

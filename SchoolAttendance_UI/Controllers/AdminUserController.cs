@@ -16,6 +16,45 @@ namespace SchoolAttendance_UI.Controllers
         {
             _httpClient = httpClient;
         }
+        public async Task<IActionResult> AssignRole(string userId)
+        {
+            var response = await _httpClient.GetAsync($"https://localhost:7040/api/UserRole/get-user-roles/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+                var userRoles = JsonSerializer.Deserialize<UserRoleAssignmentViewModel>(jsonData);
+                return View(userRoles);
+            }
+            return View("Error");
+        }
+
+        // Post: Assign a new role to the user
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(UserRoleAssignmentViewModel model)
+        {
+            // Sadece UserId ve RoleToAssign (RoleName) gönderilecek
+            var userRoleModel = new UserRoleModel
+            {
+                UserId = model.UserId,
+                RoleName = model.RoleToAssign
+            };
+
+            var jsonContent = JsonSerializer.Serialize(userRoleModel);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("https://localhost:7040/api/UserRole/assign-role", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View("Error");
+        }
+        public class UserRoleModel
+        {
+            public string UserId { get; set; }
+            public string RoleName { get; set; }
+        }
 
         // List all users
         public async Task<IActionResult> Index()
@@ -54,34 +93,7 @@ namespace SchoolAttendance_UI.Controllers
             return View("Error");
         }
 
-        // Get roles for a specific user and display form to assign role
-        public async Task<IActionResult> AssignRole(string userId)
-        {
-            var response = await _httpClient.GetAsync($"https://localhost:7040/api/UserRole/get-user-roles/{userId}");
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var userRoles = JsonSerializer.Deserialize<UserRoleAssignmentViewModel>(jsonData);
-                return View(userRoles);
-            }
-            return View("Error");
-        }
-
-        // Assign a new role to the user
-        [HttpPost]
-        public async Task<IActionResult> AssignRole(UserRoleAssignmentViewModel model)
-        {
-            var jsonContent = JsonSerializer.Serialize(model);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("https://localhost:7040/api/UserRole/assign-role", content);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            return View("Error");
-        }
-
+        
         // Add a new user
         [HttpPost]
         public async Task<IActionResult> AddUser(UserViewModel user, string password)

@@ -37,7 +37,6 @@ namespace SchoolAttendance_UI.Controllers
             var jsonContent = JsonConvert.SerializeObject(model);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            // API'ye istek gönderiyoruz
             var response = await _httpClient.PostAsync("https://localhost:7040/api/account/login", content);
 
             if (response.IsSuccessStatusCode)
@@ -45,24 +44,32 @@ namespace SchoolAttendance_UI.Controllers
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var loginResponse = JsonConvert.DeserializeObject<LoginResponseModel>(jsonResponse);
 
-                // Kullanıcı ID'sini loginResponse üzerinden alarak Claim'leri oluşturun
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, loginResponse.UserId), // Kullanıcı ID'si
-                    new Claim(ClaimTypes.Name, model.SchoolNumber) // Kullanıcı adı (SchoolNumber)
+                    new Claim(ClaimTypes.NameIdentifier, loginResponse.UserId),
+                    new Claim(ClaimTypes.Name, model.SchoolNumber),
+                    new Claim(ClaimTypes.Role, loginResponse.Role) // Rolü claim'e ekle
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                // Kullanıcıyı oturum açma işlemi yap
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                // Yönlendirme
-                return RedirectToAction("Index", "Home");
+                // Rol kontrolü ve yönlendirme
+                if (loginResponse.Role == "Teacher")
+                {
+                    return RedirectToAction("Create", "Lesson"); // Öğretmen sayfasına yönlendir
+                }
+                else if (loginResponse.Role == "Student")
+                {
+                    return RedirectToAction("RecordAttendance", "QRScanner"); // Öğrenci sayfasına yönlendir
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home"); // Varsayılan yönlendirme
+                }
             }
             else
             {
-                // Giriş başarısız ise hata mesajı gösterilir
                 ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
             }
@@ -70,10 +77,9 @@ namespace SchoolAttendance_UI.Controllers
 
         public class LoginResponseModel
         {
-            public string Message { get; set; }
-            public string UserId { get; set; } // Kullanıcı ID'si eklendi
+            public string UserId { get; set; }
+            public string Role { get; set; } // Kullanıcı rolü
         }
-
 
         // GET: Register Page
         public IActionResult Register()
@@ -140,6 +146,24 @@ namespace SchoolAttendance_UI.Controllers
                 ModelState.AddModelError("", "Password change failed.");
                 return View(model);
             }
+        }
+
+        // POST: Logout
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            // API'ye Logout isteği gönder
+            var response = await _httpClient.PostAsync("https://localhost:7040/api/account/logout", null);
+
+            // Kullanıcıdan çıkış yap
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Login"); // Başarılı çıkış sonrası login sayfasına yönlendir
+            }
+
+            return View("Error"); // Hata durumu
         }
     }
 }

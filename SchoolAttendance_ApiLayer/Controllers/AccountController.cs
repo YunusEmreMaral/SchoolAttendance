@@ -50,7 +50,6 @@ namespace SchoolAttendance_ApiLayer.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // SchoolNumber'a göre kullanıcıyı buluyoruz
             var user = await _userManager.Users.SingleOrDefaultAsync(u => u.SchoolNumber == model.SchoolNumber);
 
             if (user == null)
@@ -58,15 +57,19 @@ namespace SchoolAttendance_ApiLayer.Controllers
                 return Unauthorized(new { Message = "Invalid login attempt." });
             }
 
-            // Kullanıcı bulundu, şimdi UserName ile giriş yapalım
             var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
+                // Kullanıcının rollerini al
+                var roles = await _userManager.GetRolesAsync(user);
+                string userRole = roles.FirstOrDefault(); // İlk rolü al
+
                 return Ok(new
                 {
                     Message = "Login successful.",
-                    UserId = user.Id // Kullanıcı ID'sini burada döndürüyoruz
+                    UserId = user.Id,
+                    Role = userRole // Rol bilgisi
                 });
             }
 
@@ -75,6 +78,13 @@ namespace SchoolAttendance_ApiLayer.Controllers
 
 
 
+
+        public class LoginResponseModel
+        {
+            public string UserId { get; set; }
+            public string Role { get; set; } // Rol bilgisi
+                                             // Diğer alanlar...
+        }
 
 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SchoolAttendance_UI.Models;
 using System.Security.Claims;
@@ -6,6 +7,8 @@ using System.Text;
 
 namespace SchoolAttendance_UI.Controllers
 {
+    [Authorize(Roles = "Teacher")] 
+
     public class LessonController : Controller
     {
         private readonly HttpClient _httpClient;

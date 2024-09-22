@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace SchoolAttendance_UI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Student")]
+
     public class QRScannerController : Controller
     {
         private readonly HttpClient _httpClient;

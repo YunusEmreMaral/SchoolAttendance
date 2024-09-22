@@ -21,12 +21,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("List", "Lesson")">Dersler</a>
                 </li>
+                
                 <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("ShowQr", "Lesson")">QR Göster</a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                        <button type="submit" class="nav-link" style="border:none; background:none; color:inherit; cursor:pointer;">Çıkış Yap</button>
+                    </form>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Attendance", "Lesson")">Yoklamalar</a>
-                </li>
+
+               
             </ul>
         </div>
     </nav>
